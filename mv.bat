@@ -1,0 +1,1 @@
+copy "dist\mapbox-gl-draw-snap-mode.js" "docs"
