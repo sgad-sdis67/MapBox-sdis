@@ -200,7 +200,7 @@ const calcClosestLayer = (lngLat, layers) => {
 };
 
 // minimal distance before marker snaps (in pixels)
-const metersPerPixel = function (latitude, zoomLevel) {
+export const metersPerPixel = function (latitude, zoomLevel) {
   const earthCircumference = 40075017;
   const latitudeRadians = latitude * (Math.PI / 180);
   return (
@@ -208,6 +208,11 @@ const metersPerPixel = function (latitude, zoomLevel) {
     Math.pow(2, zoomLevel + 8)
   );
 };
+
+
+export const angleToMeters = function (lng){  // generally used geo measurement function
+  return lng * 1.132 / 0.00001; 
+}
 
 // we got the point we want to snap to (C), but we need to check if a coord of the polygon
 // receives priority over C as the snapping point. Let's check this here

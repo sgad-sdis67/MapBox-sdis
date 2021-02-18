@@ -6,7 +6,8 @@
   "module": "src/index.js",
   "scripts": {
     "build": "webpack",
-    "start": "mv.bat && webpack serve --config ./webpack.development.js",
+    "dev": "webpack && mv.bat && webpack serve --config ./webpack.development.js",
+    "start": "webpack serve --config ./webpack.development.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
