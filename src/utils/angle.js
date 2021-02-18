@@ -11,7 +11,10 @@ import distance from '@turf/distance';
 
 class Angle {
  
-  constructor() {}
+  constructor() {
+    this.lastAngle = 0;
+    this.lastCalcul = 0;
+  }
 
   addXPixelsToLng (lng, x, lat) {
     const lngInMeters = angleToMeters(lng);
@@ -31,13 +34,14 @@ class Angle {
 
   calcAngle(state, e) {
     let angle;
-    if (state.lastVertex) {
-      console.log('1', this.lastAngle, state.line.coordinates, [e.lngLat.lng, e.lngLat.lat]);
-      angle =Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]));
+    if (Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
+      console.log('1', 360 )
+      angle = 360 + Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
     } else {
-      angle = Math.round(bearing(state.line.coordinates[0], state.line.coordinates[1]));
+      angle = Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
     }
-    return angle;
+    this.lastCalcul = (this.lastAngle + angle)%360;
+    return this.lastCalcul;
   }
 
   moveOn(state, e) {
@@ -49,7 +53,8 @@ class Angle {
   createAngleDiv(state, event, lng, lat) {
     this.state = state;
     if (this.angleDiv) {
-      this.lastAngle = this.calcAngle(state, event);
+      this.lastAngle = this.lastCalcul;
+      console.log("lastAngle", this.lastAngle)
       this.marker.setLngLat([this.addXPixelsToLng(lng, 15, lat), lat]);
     } else {
      this.addMarkerToMap(state, event, lng, lat);
