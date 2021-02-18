@@ -13,6 +13,7 @@ import {
   shouldHideGuide,
   snap,
 } from "./../utils";
+import Angle from './../utils/angle.js'
 
 const SnapPolygonMode = { ...DrawPolygon };
 
@@ -75,10 +76,11 @@ SnapPolygonMode.onSetup = function (options) {
   this.map.on("moveend", moveendCallback);
   this.map.on("draw.snap.options_changed", optionsChangedCallBAck);
 
+  state.angle = new Angle();
   return state;
 };
 
-SnapPolygonMode.onClick = function (state) {
+SnapPolygonMode.onClick = function (state, e) {
   // We save some processing by rounding on click, not mousemove
   const lng = state.snappedLng;
   const lat = state.snappedLat;
@@ -106,6 +108,7 @@ SnapPolygonMode.onClick = function (state) {
   state.currentVertexPosition++;
 
   state.polygon.updateCoordinate(`0.${state.currentVertexPosition}`, lng, lat);
+  state.angle.createAngleDiv(state, e, lng, lat);
 };
 
 SnapPolygonMode.onMouseMove = function (state, e) {
@@ -131,6 +134,7 @@ SnapPolygonMode.onMouseMove = function (state, e) {
   } else {
     this.updateUIClasses({ mouse: cursors.ADD });
   }
+  state.angle.moveOn(state, e);
 };
 
 // This is 'extending' DrawPolygon.toDisplayFeatures
@@ -152,6 +156,7 @@ SnapPolygonMode.onStop = function (state) {
 
   // This relies on the the state of SnapPolygonMode being similar to DrawPolygon
   DrawPolygon.onStop.call(this, state);
+  state.angle.remove();
 };
 
 export default SnapPolygonMode;

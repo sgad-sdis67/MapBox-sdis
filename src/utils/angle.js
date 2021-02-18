@@ -34,16 +34,26 @@ class Angle {
 
   calcAngle(state, e) {
     let angle;
-    if (Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
-      angle = 360 + Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
+    if (state.line) {
+      if (Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
+        angle = 360 + Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
+      } else {
+        angle = Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
+      }
     } else {
-      angle = Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
+      if (Math.round(bearing(state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
+        angle = 360 + Math.round(bearing(state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2], [e.lngLat.lng, e.lngLat.lat]))
+      } else {
+        angle = Math.round(bearing(state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2], [e.lngLat.lng, e.lngLat.lat]))
+      }
     }
+   
     this.lastCalcul = (this.lastAngle + angle)%360;
     return this.lastCalcul;
   }
 
   moveOn(state, e) {
+    console.log(state, 'state', e);
     if (this.angleDiv) {
       this.angleDiv.textContent = this.calcAngle(state, e);
     } 
@@ -56,6 +66,12 @@ class Angle {
       this.marker.setLngLat([this.addXPixelsToLng(lng, 15, lat), lat]);
     } else {
      this.addMarkerToMap(state, event, lng, lat);
+    }
+  }
+
+  remove() {
+    if (this.marker) {
+      this.marker.remove();
     }
   }
 }
