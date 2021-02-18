@@ -26,7 +26,7 @@ class Angle {
 
   addMarkerToMap(state, e, lng, lat) {
     this.angleDiv = document.createElement('div');
-    this.angleDiv.textContent = "test";
+    this.angleDiv.textContent = "erreur";
     this.marker = new mapboxgl.Marker(this.angleDiv) 
     .setLngLat([this.addXPixelsToLng(lng, 50, lat), lat])
     .addTo(this.state.map);
@@ -35,7 +35,6 @@ class Angle {
   calcAngle(state, e) {
     let angle;
     if (Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
-      console.log('1', 360 )
       angle = 360 + Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
     } else {
       angle = Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
@@ -54,7 +53,6 @@ class Angle {
     this.state = state;
     if (this.angleDiv) {
       this.lastAngle = this.lastCalcul;
-      console.log("lastAngle", this.lastAngle)
       this.marker.setLngLat([this.addXPixelsToLng(lng, 15, lat), lat]);
     } else {
      this.addMarkerToMap(state, event, lng, lat);
