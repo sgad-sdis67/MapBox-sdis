@@ -53,7 +53,6 @@ class Angle {
   }
 
   moveOn(state, e) {
-    console.log(state, 'state', e);
     if (this.angleDiv) {
       this.angleDiv.textContent = this.calcAngle(state, e);
     } 
@@ -62,7 +61,7 @@ class Angle {
   createAngleDiv(state, event, lng, lat) {
     this.state = state;
     if (this.angleDiv) {
-      this.lastAngle = this.lastCalcul;
+      this.lastAngle = (this.lastAngle + this.lastCalcul)%360;
       this.marker.setLngLat([this.addXPixelsToLng(lng, 15, lat), lat]);
     } else {
      this.addMarkerToMap(state, event, lng, lat);
