@@ -105,9 +105,7 @@ SnapLineMode.onClick = function (state, e) {
   state.currentVertexPosition++;
 
   state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
-  console.log(state.angle, 'angle')
   state.angle.createAngleDiv(state, e, lng, lat);
-  console.log(state.angle, 'après')
 };
 
 SnapLineMode.onMouseMove = function (state, e) {
@@ -154,6 +152,7 @@ SnapLineMode.onStop = function (state) {
 
   // This relies on the the state of SnapLineMode being similar to DrawLine
   DrawLine.onStop.call(this, state);
+  state.angle.marker.remove();
 };
 
 export default SnapLineMode;
