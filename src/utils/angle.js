@@ -32,29 +32,34 @@ class Angle {
     .addTo(this.state.map);
   }
 
-  calcAngle(state, e) {
-    let angle;
+  definePointsAndCalculeAngle(state, e) {
+    let point1;
+    let point2;
     if (state.line) {
-      if (Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
-        angle = 360 + Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
-      } else {
-        angle = Math.round(bearing(state.line.coordinates[state.line.coordinates.length - 2], [e.lngLat.lng, e.lngLat.lat]))
-      }
+      point1 = state.line.coordinates[state.line.coordinates.length - 2];
+      point2 = [e.lngLat.lng, e.lngLat.lat];
     } else {
-      if (Math.round(bearing(state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2], [e.lngLat.lng, e.lngLat.lat])) < 0) {
-        angle = 360 + Math.round(bearing(state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2], [e.lngLat.lng, e.lngLat.lat]))
-      } else {
-        angle = Math.round(bearing(state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2], [e.lngLat.lng, e.lngLat.lat]))
-      }
+      point1 = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2];
+      point2 = [e.lngLat.lng, e.lngLat.lat];
     }
-   
+    return this.calcAngle(point1, point2);
+  }
+
+  calcAngle(point1, point2) {
+    let angle;
+    const absoluteAngle = Math.round(bearing(point1, point2));
+    if (absoluteAngle < 0) {
+      angle = 360 + absoluteAngle;
+    } else {
+      angle = absoluteAngle;
+    }
     this.lastCalcul = (this.lastAngle + angle)%360;
     return this.lastCalcul;
   }
 
   moveOn(state, e) {
     if (this.angleDiv) {
-      this.angleDiv.textContent = this.calcAngle(state, e);
+      this.angleDiv.textContent = this.definePointsAndCalculeAngle(state, e);
     } 
   }
 
