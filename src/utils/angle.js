@@ -8,7 +8,7 @@ import bearing from '@turf/bearing';
 import destination from '@turf/destination';
 import along from '@turf/along';
 import distance from '@turf/distance';
-import { SingleEntryPlugin } from 'webpack';
+import { bearingToAzimuth, bearingToAngle } from '@turf/turf';
 
 class Angle {
  
@@ -62,11 +62,15 @@ class Angle {
   }
 
   drawAngleSnapped(angle, point, point2, state) {
-    var distanceCalculated = distance(point, point2); 
+    var bearing1 = bearing(point, point2);
+    var azimuth = bearingToAzimuth(bearing1);
+    var distanceCalculated = distance(point, point2, {units: 'degrees'}); 
     var hypotenuse = distanceCalculated / Math.cos(angle);
-    point2[0] = hypotenuse * Math.cos(angle);
-    point2[1] = hypotenuse * Math.sin(angle);
-    console.log(point, point2, angle)
+    
+    console.log(point, point2, angle, azimuth, distanceCalculated, hypotenuse, bearing1)
+    point2[1] = point[1] +  distanceCalculated * Math.sin (azimuth);
+    point2[0] = point[0] +  distanceCalculated *  Math.cos (azimuth);
+    console.log("arrivée", point2)
     const obj = { 
       type: 'LineString',
       coordinates: [point, point2]
