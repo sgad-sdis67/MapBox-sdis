@@ -156,7 +156,7 @@ SnapPolygonMode.onStop = function (state) {
 
   // This relies on the the state of SnapPolygonMode being similar to DrawPolygon
   DrawPolygon.onStop.call(this, state);
-  state.angle.remove();
+  state.angle.remove(state);
 };
 
 export default SnapPolygonMode;

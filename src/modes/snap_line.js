@@ -152,7 +152,7 @@ SnapLineMode.onStop = function (state) {
 
   // This relies on the the state of SnapLineMode being similar to DrawLine
   DrawLine.onStop.call(this, state);
-  state.angle.remove();
+  state.angle.remove(state);
 };
 
 export default SnapLineMode;
