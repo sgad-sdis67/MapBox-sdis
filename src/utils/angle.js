@@ -8,11 +8,11 @@ import bearing from '@turf/bearing';
 import destination from '@turf/destination';
 import along from '@turf/along';
 import distance from '@turf/distance';
-import { bearingToAzimuth, bearingToAngle } from '@turf/turf';
+import { bearingToAzimuth, bearingToAngle,transformRotate } from '@turf/turf';
 
 class Angle {
  
-  constructor(withSnapping = 15) {
+  constructor(withSnapping = 30) {
     this.lastAngle = 0;
     this.lastCalcul = 0;
     this.snapping = withSnapping;
@@ -65,18 +65,16 @@ class Angle {
   drawAngleSnapped(angle, point, point2, state) {
     var bearing1 = bearing(point, point2);
     var azimuth = bearingToAzimuth(bearing1);
-    var distanceCalculated = distance(point, point2, {units: 'degrees'}); 
+    var distanceCalculated = distance(point, point2); 
     var hypotenuse = distanceCalculated / Math.cos(angle);
-    
-    console.log(point, point2, angle, azimuth, distanceCalculated, hypotenuse, bearing1)
-    point2[1] = point[1] +  distanceCalculated * Math.sin (angle);
-    point2[0] = point[0] +  distanceCalculated *  Math.cos (angle);
     console.log("arrivée", point2)
-    const obj = { 
+    var obj = { 
       type: 'LineString',
       coordinates: [point, point2]
     }
-    this.snapPoint = point2;
+    obj = transformRotate(obj, angle, {pivot: point})
+    console.log(point, point2, angle, Math.sin(angle), Math.cos(angle), azimuth, this.lastAngle)
+    this.snapPoint = obj.coordinates[1];
     if (!state.map.getSource('snapLine')) {
       state.map.addSource('snapLine', { type: 'geojson', data: obj });
       state.map.addLayer({
