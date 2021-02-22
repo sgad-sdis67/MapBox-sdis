@@ -49,7 +49,7 @@ export const addLineToSnapList = (coords, state) => {
     type: "Feature",
     properties: {},
     geometry: {
-      type: "LineString",
+      type: "Point",
       coordinates: [coords]
     }
   }
@@ -167,7 +167,6 @@ const calcLayerDistances = (lngLat, layer) => {
 
   // the coords of the layer
   const latlngs = getCoords(layer);
-
   if (isMarker) {
     const [lng, lat] = latlngs;
     // return the info for the marker, no more calculations needed
@@ -176,16 +175,14 @@ const calcLayerDistances = (lngLat, layer) => {
       distance: distance(latlngs, P),
     };
   }
+  
 
   if (isPolygon) lines = polygonToLine(layer);
   else lines = layer;
-
   const nearestPoint = nearestPointOnLine(lines, P);
   const [lng, lat] = nearestPoint.geometry.coordinates;
-
   let segmentIndex = nearestPoint.properties.index;
   if (segmentIndex + 1 === lines.geometry.coordinates.length) segmentIndex--;
-
   return {
     latlng: { lng, lat },
     segment: lines.geometry.coordinates.slice(segmentIndex, segmentIndex + 2),
@@ -201,7 +198,6 @@ const calcClosestLayer = (lngLat, layers) => {
   layers.forEach((layer, index) => {
     // find the closest latlng, segment and the distance of this layer to the dragged marker latlng
     const results = calcLayerDistances(lngLat, layer);
-
     // save the info if it doesn't exist or if the distance is smaller than the previous one
     if (
       closestLayer.distance === undefined ||
@@ -314,7 +310,6 @@ export const snap = (state, e) => {
   let closestLayer, minDistance, snapLatLng;
   if (state.options.snap) {
     closestLayer = calcClosestLayer({ lng, lat }, state.snapList);
-
     // if no layers found. Can happen when circle is the only visible layer on the map and the hidden snapping-border circle layer is also on the map
     if (Object.keys(closestLayer).length === 0) {
       return false;
@@ -331,7 +326,6 @@ export const snap = (state, e) => {
     } else {
       snapLatLng = closestLayer.latlng;
     }
-
     minDistance =
       ((state.options.snapOptions && state.options.snapOptions.snapPx) || 15) *
       metersPerPixel(snapLatLng.lat, state.map.getZoom());

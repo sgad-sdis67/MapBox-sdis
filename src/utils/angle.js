@@ -106,7 +106,6 @@ class Angle {
 
   createAngleDiv(state, event, lng, lat) {
     this.state = state;
-    console.log(state, 'state')
     if (this.angleDiv) {
       this.lastAngle = (this.lastAngle + this.lastCalcul)%360;
       this.marker.setLngLat([this.addXPixelsToLng(lng, 15, lat), lat]);
