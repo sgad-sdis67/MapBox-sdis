@@ -11,6 +11,7 @@ import {
   getGuideFeature,
   IDS,
   shouldHideGuide,
+  addLineToSnapList,
   snap
 } from "./../utils";
 import Angle from './../utils/angle.js'
@@ -109,6 +110,8 @@ SnapLineMode.onClick = function (state, e) {
 
   state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
   state.angle.createAngleDiv(state, e, lng, lat);
+  addLineToSnapList([ lng, lat ], state);
+  console.log(state.snapList)
 };
 
 SnapLineMode.onMouseMove = function (state, e) {

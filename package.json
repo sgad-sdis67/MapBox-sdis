@@ -11,7 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@turf/turf": "^5.1.6"
+    "@turf/turf": "^5.1.6",
+    "uuid": "^8.3.2"
   },
   "peerDependencies": {
     "@mapbox/mapbox-gl-draw": "^1.2.0"

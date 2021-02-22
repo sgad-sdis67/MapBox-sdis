@@ -18,6 +18,7 @@ import distance from "@turf/distance";
 import polygonToLine from "@turf/polygon-to-line";
 import nearestPointOnLine from "@turf/nearest-point-on-line";
 import midpoint from "@turf/midpoint";
+import { v4 as uuidv4 } from 'uuid';
 
 export const IDS = {
   VERTICAL_GUIDE: "VERTICAL_GUIDE",
@@ -41,6 +42,23 @@ export const addPointTovertices = (
     vertices.push(coordinates);
   }
 };
+
+export const addLineToSnapList = (coords, state) => {
+  const objToAddToSnapList = { 
+    id: uuidv4(), 
+    type: "Feature",
+    properties: {},
+    geometry: {
+      type: "LineString",
+      coordinates: [coords]
+    }
+  }
+  addToSnapList(objToAddToSnapList, state);
+}
+
+export const addToSnapList = (feature, state) => {
+  state.snapList.push(feature);
+}
 
 export const createSnapList = (map, draw, currentFeature) => {
   // Get all drawn features
