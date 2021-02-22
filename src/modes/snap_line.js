@@ -79,9 +79,12 @@ SnapLineMode.onSetup = function (options) {
 
 SnapLineMode.onClick = function (state, e) {
   // We save some processing by rounding on click, not mousemove
-  const lng = state.snappedLng;
-  const lat = state.snappedLat;
-
+  var lng = state.snappedLng;
+  var lat = state.snappedLat;
+  if (state.angle.snapPoint) {
+    lng = state.angle.snapPoint[0];
+    lat = state.angle.snapPoint[1];
+  }
   // End the drawing if this click is on the previous position
   // Note: not bothering with 'direction'
   if (state.currentVertexPosition > 0) {

@@ -45,8 +45,9 @@ class Angle {
       point1 = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2];
       point2 = [e.lngLat.lng, e.lngLat.lat];
     }
-    console.log(e, 'event', point2)
+
     let angle = this.calcAngle(point1, point2);
+    console.log(e, 'event', angle)
     if (this.snapping != 0) {
       let angleToSnap;
       const modulo = angle % this.snapping;
@@ -68,13 +69,14 @@ class Angle {
     var hypotenuse = distanceCalculated / Math.cos(angle);
     
     console.log(point, point2, angle, azimuth, distanceCalculated, hypotenuse, bearing1)
-    point2[1] = point[1] +  distanceCalculated * Math.sin (azimuth);
-    point2[0] = point[0] +  distanceCalculated *  Math.cos (azimuth);
+    point2[1] = point[1] +  distanceCalculated * Math.sin (angle);
+    point2[0] = point[0] +  distanceCalculated *  Math.cos (angle);
     console.log("arrivée", point2)
     const obj = { 
       type: 'LineString',
       coordinates: [point, point2]
     }
+    this.snapPoint = point2;
     if (!state.map.getSource('snapLine')) {
       state.map.addSource('snapLine', { type: 'geojson', data: obj });
       state.map.addLayer({
