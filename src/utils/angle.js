@@ -29,7 +29,7 @@ class Angle {
 
   addMarkerToMap(state, e, lng, lat) {
     this.angleDiv = document.createElement('div');
-    this.angleDiv.textContent = "erreur";
+    this.angleDiv.textContent = "NaN";
     this.marker = new mapboxgl.Marker(this.angleDiv) 
     .setLngLat([this.addXPixelsToLng(lng, 50, lat), lat])
     .addTo(this.state.map);
