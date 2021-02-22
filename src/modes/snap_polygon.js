@@ -82,8 +82,12 @@ SnapPolygonMode.onSetup = function (options) {
 
 SnapPolygonMode.onClick = function (state, e) {
   // We save some processing by rounding on click, not mousemove
-  const lng = state.snappedLng;
-  const lat = state.snappedLat;
+  var lng = state.snappedLng;
+  var lat = state.snappedLat;
+  if (state.angle.snapPoint) {
+    lng = state.angle.snapPoint[0];
+    lat = state.angle.snapPoint[1];
+  }
 
   // End the drawing if this click is on the previous position
   if (state.currentVertexPosition > 0) {
@@ -156,7 +160,7 @@ SnapPolygonMode.onStop = function (state) {
 
   // This relies on the the state of SnapPolygonMode being similar to DrawPolygon
   DrawPolygon.onStop.call(this, state);
-  state.angle.remove();
+  state.angle.remove(state);
 };
 
 export default SnapPolygonMode;
