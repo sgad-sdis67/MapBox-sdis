@@ -422,6 +422,25 @@ export const getGuideFeature = (id) => ({
     },
 });
 
+export const visualizeSnapPoint = (state, lng, lat) => {
+    console.log(state.markerPoint, 'markerPoint')
+    if (!state.markerPoint) {
+        var el = document.createElement('div');
+        el.className = 'marker';
+        el.style.height = "14px";
+        el.style.width = "14px";
+        el.style.backgroundColor = 'yellow';
+        el.style.borderRadius = "7px";
+
+        state.markerPoint = new mapboxgl.Marker(el)
+            .setLngLat([lng, lat])
+            .addTo(state.map);
+    } else {
+        state.markerPoint.setLngLat([lng, lat]);
+    }
+
+}
+
 export const shouldHideGuide = (state, geojson) => {
     if (
         geojson.properties.id === IDS.VERTICAL_GUIDE &&

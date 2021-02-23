@@ -12,7 +12,8 @@ import {
     IDS,
     shouldHideGuide,
     addLineToSnapList,
-    snap
+    snap,
+    visualizeSnapPoint
 } from "./../utils";
 import Angle from './../utils/angle.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -130,6 +131,14 @@ SnapLineMode.onMouseMove = function(state, e) {
     state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
     state.snappedLng = lng;
     state.snappedLat = lat;
+    if (e.lngLat.lng !== lng && e.lngLat.lat !== lat) {
+        visualizeSnapPoint(state, lng, lat);
+    } else {
+        if (state.markerPoint) {
+            state.markerPoint.remove();
+            state.markerPoint = undefined;
+        }
+    }
 
     if (
         state.lastVertex &&
@@ -169,6 +178,10 @@ SnapLineMode.onStop = function(state) {
     // This relies on the the state of SnapLineMode being similar to DrawLine
     DrawLine.onStop.call(this, state);
     state.angle.remove(state);
+    if (state.markerPoint) {
+        state.markerPoint.remove();
+        state.markerPoint = undefined;
+    }
 };
 
 export default SnapLineMode;
