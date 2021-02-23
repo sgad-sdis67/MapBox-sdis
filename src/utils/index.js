@@ -59,7 +59,12 @@ export const addLineToSnapList = (coords, state) => {
         }
         addToSnapList(objToAddToSnapList, state);
     } else {
-        alreadyExist.geometry.coordinates = [state.line.coordinates.slice(0, state.line.coordinates.length - 1)];
+        if (state.line) {
+            alreadyExist.geometry.coordinates = [state.line.coordinates.slice(0, state.line.coordinates.length - 1)];
+        } else {
+            alreadyExist.geometry.coordinates = [state.polygon.coordinates.slice(0, state.polygon.coordinates.length - 1)];
+        }
+
     }
 }
 
