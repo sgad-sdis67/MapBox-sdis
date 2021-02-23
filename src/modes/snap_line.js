@@ -111,6 +111,10 @@ SnapLineMode.onClick = function (state, e) {
   state.angle.createAngleDiv(state, e, lng, lat);
 };
 
+SnapLineMode.onTouchMove = function(state, e) {
+  this.onMouseMove(state, e);
+}
+
 SnapLineMode.onMouseMove = function (state, e) {
   const { lng, lat } = snap(state, e);
 
