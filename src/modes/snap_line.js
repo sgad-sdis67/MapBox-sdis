@@ -73,6 +73,7 @@ SnapLineMode.onSetup = function (options) {
   this.map.on("moveend", moveendCallback);
   this.map.on("draw.snap.options_changed", optionsChangedCallBAck);
   state.angle = new Angle();
+  this.map.on("touchMove", onTouchMove);
 
   return state;
 };
