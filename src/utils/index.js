@@ -18,6 +18,7 @@ import distance from "@turf/distance";
 import polygonToLine from "@turf/polygon-to-line";
 import nearestPointOnLine from "@turf/nearest-point-on-line";
 import midpoint from "@turf/midpoint";
+import { v4 as uuidv4 } from 'uuid';
 
 export const IDS = {
     VERTICAL_GUIDE: "VERTICAL_GUIDE",
@@ -46,9 +47,6 @@ export const addLineToSnapList = (coords, state) => {
     const alreadyExist = state.snapList.find(snapValue => {
         return snapValue.id === state.id;
     });
-    const example = state.snapList.find(snapValue => {
-        return snapValue.id === "example-id";
-    });
     if (!alreadyExist) {
         const objToAddToSnapList = {
             id: state.id,
@@ -63,6 +61,20 @@ export const addLineToSnapList = (coords, state) => {
     } else {
         alreadyExist.geometry.coordinates = [state.line.coordinates.slice(0, state.line.coordinates.length - 1)];
     }
+}
+
+
+export const addPointToSnapList = (coords, state) => {
+    const objToAddToSnapList = {
+        id: uuidv4(),
+        type: "Feature",
+        properties: {},
+        geometry: {
+            type: "Point",
+            coordinates: coords
+        }
+    }
+    addToSnapList(objToAddToSnapList, state);
 }
 
 export const addToSnapList = (feature, state) => {
@@ -181,7 +193,7 @@ const calcLayerDistances = (lngLat, layer) => {
         // return the info for the marker, no more calculations needed
         return {
             latlng: { lng, lat },
-            distance: distance(latlngs, P),
+            distance: distance(latlngs, P)
         };
     }
 
@@ -323,7 +335,6 @@ export const snap = (state, e) => {
         if (Object.keys(closestLayer).length === 0) {
             return false;
         }
-
         const isMarker = closestLayer.isMarker;
 
         if (!isMarker) {

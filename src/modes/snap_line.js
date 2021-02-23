@@ -86,6 +86,11 @@ SnapLineMode.onClick = function(state, e) {
     // We save some processing by rounding on click, not mousemove
     var lng = state.snappedLng;
     var lat = state.snappedLat;
+
+    if (state.angle.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
+        lng = state.angle.snapPoint[0];
+        lat = state.angle.snapPoint[1];
+    }
     /* if (state.angle.snapPoint) {
       lng = state.angle.snapPoint[0];
       lat = state.angle.snapPoint[1];
@@ -114,13 +119,9 @@ SnapLineMode.onClick = function(state, e) {
 
     state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
     state.angle.createAngleDiv(state, e, lng, lat);
-    console.log(state.line, 'state line');
     if (state.line.coordinates.length > 3) {
-        console.log('dedans', lng, lat, state.line);
         addLineToSnapList(state.line.coordinates.slice(0, state.line.coordinates.length - 1), state); // ajouter un système pour ajouter les points au layer au lieu d'ajouter des layers
     }
-
-    console.log(state.snapList)
 };
 
 SnapLineMode.onMouseMove = function(state, e) {

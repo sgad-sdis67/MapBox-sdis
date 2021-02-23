@@ -9,11 +9,13 @@ import destination from '@turf/destination';
 import along from '@turf/along';
 import distance from '@turf/distance';
 import { bearingToAzimuth, bearingToAngle, transformRotate } from '@turf/turf';
+import {
+    addPointToSnapList
+} from "./../utils";
 
 class Angle {
 
     constructor(withSnapping = 30) {
-        this.lastAngle = 0;
         this.lastCalcul = 0;
         this.snapping = withSnapping;
     }
