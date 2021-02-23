@@ -62,7 +62,7 @@ export const addLineToSnapList = (coords, state) => {
         if (state.line) {
             alreadyExist.geometry.coordinates = [state.line.coordinates.slice(0, state.line.coordinates.length - 1)];
         } else {
-            alreadyExist.geometry.coordinates = [state.polygon.coordinates.slice(0, state.polygon.coordinates.length - 1)];
+            alreadyExist.geometry.coordinates = [state.polygon.coordinates[0].slice(0, state.polygon.coordinates[0].length - 1)];
         }
 
     }

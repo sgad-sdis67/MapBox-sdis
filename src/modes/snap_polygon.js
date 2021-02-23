@@ -12,7 +12,8 @@ import {
     IDS,
     shouldHideGuide,
     snap,
-    addLineToSnapList
+    addLineToSnapList,
+    visualizeSnapPoint
 } from "./../utils";
 import Angle from './../utils/angle.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -118,8 +119,8 @@ SnapPolygonMode.onClick = function(state, e) {
 
     state.polygon.updateCoordinate(`0.${state.currentVertexPosition}`, lng, lat);
     state.angle.createAngleDiv(state, e, lng, lat);
-    if (state.polygon.coordinates.length > 3) {
-        addLineToSnapList(state.polygon.coordinates.slice(0, state.polygon.coordinates.length - 1), state); // ajouter un système pour ajouter les points au layer au lieu d'ajouter des layers
+    if (state.polygon.coordinates[0] && state.polygon.coordinates[0].length > 3) {
+        addLineToSnapList(state.polygon.coordinates[0].slice(0, state.polygon.coordinates[0].length - 1), state); // ajouter un système pour ajouter les points au layer au lieu d'ajouter des layers
     }
 };
 
@@ -129,6 +130,15 @@ SnapPolygonMode.onMouseMove = function(state, e) {
     state.polygon.updateCoordinate(`0.${state.currentVertexPosition}`, lng, lat);
     state.snappedLng = lng;
     state.snappedLat = lat;
+
+    if (e.lngLat.lng !== lng && e.lngLat.lat !== lat) {
+        visualizeSnapPoint(state, lng, lat);
+    } else {
+        if (state.markerPoint) {
+            state.markerPoint.remove();
+            state.markerPoint = undefined;
+        }
+    }
 
     if (
         state.lastVertex &&
@@ -169,6 +179,10 @@ SnapPolygonMode.onStop = function(state) {
     // This relies on the the state of SnapPolygonMode being similar to DrawPolygon
     DrawPolygon.onStop.call(this, state);
     state.angle.remove(state);
+    if (state.markerPoint) {
+        state.markerPoint.remove();
+        state.markerPoint = undefined;
+    }
 };
 
 export default SnapPolygonMode;
