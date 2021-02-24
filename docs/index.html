@@ -243,6 +243,7 @@
                   on: "change",
                   action: (e) => {
                     draw.options.angle = e.target.checked;
+                    console.log(e, draw, '1')
                   },
                   classes: ["snap_mode_angle", "snap_angle"],
                   title: "Snap angle",
@@ -250,6 +251,7 @@
                 }
               ],
             });
+            draw.options.angle = true;
             map.addControl(SnapAngleOptionsBar, "top-right");
 
             draw.set({

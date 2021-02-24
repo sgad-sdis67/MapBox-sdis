@@ -54,7 +54,7 @@ class Angle {
             oldPoint = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 3];
         }
         let angle = this.calcAngle(point1, point2, oldPoint);
-        if (this.snapping != 0) {
+        if (this.snapping != 0 && state.options.angle) {
             let angleToSnap;
             const modulo = angle % this.snapping;
             if (modulo > this.snapping / 2) {
@@ -63,7 +63,9 @@ class Angle {
                 angleToSnap = Math.trunc(angle / this.snapping) * this.snapping;
             }
             this.drawAngleSnapped(angleToSnap - angle, point1, point2, state);
-        }
+        } else if (this.snapping != 0 && !state.options.angle) {
+			this.removeSnapLine(state);
+		}
         return angle;
     }
 
@@ -91,6 +93,12 @@ class Angle {
             state.map.getSource('snapLine').setData(obj)
         }
     }
+
+	removeSnapLine(state) {
+		if (state.map.getSource('snapLine')) {
+			state.map.setLayoutProperty('snapLineLayer', 'visibility', 'none');
+		}
+	}
 
     calcAngle(point1, point2, oldPoint) {
         let angle;
@@ -135,11 +143,16 @@ class Angle {
     }
 
     transformSnapping(state, e, lng, lat) {
-        if (state.angle.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
-            lng = state.angle.snapPoint[0];
-            lat = state.angle.snapPoint[1];
-        }
-        return lng, lat;
+		if (state.options.angle) {
+			console.log('into')
+			if (this.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
+				lng = this.snapPoint[0];
+				lat = this.snapPoint[1];
+				console.log('dedans');
+			}
+		}
+		console.log('1')
+        return [lng, lat];
     }
 
     onClickFinalModifications(state, e, lng, lat) {
