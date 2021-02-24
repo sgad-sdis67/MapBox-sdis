@@ -112,6 +112,25 @@
         SnapModeDrawStyles,
       } = mapboxGlDrawSnapMode;
 
+      class DistanceControl {
+        constructor() {}
+        onAdd(map) {
+            this._map = map;
+            this._container = document.createElement('div');
+            this._container.className = 'mapboxgl-ctrl';
+            this._container.style.backgroundColor = 'white';
+            this._container.style.fontSize = '30px';
+            this._container.textContent = '0 m';
+            return this._container;
+        }
+        
+        onRemove() {
+            this._container.parentNode.removeChild(this._container);
+            this._map = undefined;
+        }
+      }
+
+
       class extendDrawBarCheckboxes {
         constructor(opt) {
           let ctrl = this;
@@ -253,7 +272,8 @@
             });
             draw.options.angle = true;
             map.addControl(SnapAngleOptionsBar, "top-right");
-
+            map.addControl(new DistanceControl(), "bottom-right");
+            
             draw.set({
               type: "FeatureCollection",
               features: [

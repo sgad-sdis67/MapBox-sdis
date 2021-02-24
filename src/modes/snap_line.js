@@ -11,13 +11,11 @@ import {
     getGuideFeature,
     IDS,
     shouldHideGuide,
-    addLineToSnapList,
     snap,
     visualizeSnapPoint
 } from "./../utils";
 import Angle from './../utils/angle.js';
-import { v4 as uuidv4 } from 'uuid';
-
+import Distance from './../utils/distance.js';
 const SnapLineMode = {...DrawLine };
 
 SnapLineMode.onSetup = function(options) {
@@ -78,6 +76,7 @@ SnapLineMode.onSetup = function(options) {
     this.map.on("moveend", moveendCallback);
     this.map.on("draw.snap.options_changed", optionsChangedCallBAck);
     new Angle().onSetup(state);
+    new Distance().onSetup(state);
 
     return state;
 };
@@ -153,6 +152,7 @@ SnapLineMode.onMouseMove = function(state, e) {
         this.updateUIClasses({ mouse: cursors.ADD });
     }
     state.angle.moveOn(state, e);
+    state.distance.onMouseMove(state, lng, lat);
 };
 
 // This is 'extending' DrawLine.toDisplayFeatures
