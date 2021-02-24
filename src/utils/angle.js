@@ -41,32 +41,35 @@ class Angle {
     }
 
     definePointsAndCalculeAngle(state, e) {
-        let point1;
-        let point2;
-        let oldPoint;
-        if (state.line) {
-            point1 = state.line.coordinates[state.line.coordinates.length - 2];
-            point2 = [e.lngLat.lng, e.lngLat.lat];
-            oldPoint = state.line.coordinates[state.line.coordinates.length - 3];
-        } else {
-            point1 = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2];
-            point2 = [e.lngLat.lng, e.lngLat.lat];
-            oldPoint = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 3];
-        }
-        let angle = this.calcAngle(point1, point2, oldPoint);
-        if (this.snapping != 0 && state.options.angle) {
-            let angleToSnap;
-            const modulo = angle % this.snapping;
-            if (modulo > this.snapping / 2) {
-                angleToSnap = Math.trunc(angle / this.snapping) * this.snapping + this.snapping;
+        if (state.line && state.line.coordinates.length >=2 || state.polygon && state.polygon.coordinates[0].length >=2) {
+            let point1;
+            let point2;
+            let oldPoint;
+            if (state.line) {
+                point1 = state.line.coordinates[state.line.coordinates.length - 2];
+                point2 = [e.lngLat.lng, e.lngLat.lat];
+                oldPoint = state.line.coordinates[state.line.coordinates.length - 3];
             } else {
-                angleToSnap = Math.trunc(angle / this.snapping) * this.snapping;
+                point1 = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 2];
+                point2 = [e.lngLat.lng, e.lngLat.lat];
+                oldPoint = state.polygon.coordinates[0][state.polygon.coordinates[0].length - 3];
             }
-            this.drawAngleSnapped(angleToSnap - angle, point1, point2, state);
-        } else if (this.snapping != 0 && !state.options.angle) {
-			this.removeSnapLine(state);
-		}
-        return angle;
+            let angle = this.calcAngle(point1, point2, oldPoint);
+            if (this.snapping != 0 && state.options.angle) {
+                let angleToSnap;
+                const modulo = angle % this.snapping;
+                if (modulo > this.snapping / 2) {
+                    angleToSnap = Math.trunc(angle / this.snapping) * this.snapping + this.snapping;
+                } else {
+                    angleToSnap = Math.trunc(angle / this.snapping) * this.snapping;
+                }
+                this.drawAngleSnapped(angleToSnap - angle, point1, point2, state);
+            } else if (this.snapping != 0 && !state.options.angle) {
+                this.removeSnapLine(state);
+            }
+            return angle;
+        }
+        return 0;
     }
 
     drawAngleSnapped(angle, point, point2, state) {
@@ -111,9 +114,16 @@ class Angle {
         return angle;
     }
 
+    findAngleControl(state) {
+        return state.map._controls.find((control) => {
+            return control.constructor.name === 'AngleControl';
+        });
+    }
+
     moveOn(state, e) {
-        if (this.angleDiv) {
-            this.angleDiv.textContent = this.definePointsAndCalculeAngle(state, e);
+        const control = this.findAngleControl(state);
+        if (control) {
+            control._container.lastChild.textContent = this.definePointsAndCalculeAngle(state, e) + ' °';
         }
     }
 
@@ -131,6 +141,10 @@ class Angle {
         if (this.marker) {
             this.marker.remove();
         }
+        const angleControl = this.findAngleControl(state);
+        if (angleControl) {
+            angleControl._container.lastChild.textContent = '0 °';
+        } 
         if (state.map.getSource('snapLine')) {
             state.map.setLayoutProperty('snapLineLayer', 'visibility', 'none');
         }
@@ -153,7 +167,6 @@ class Angle {
     }
 
     onClickFinalModifications(state, e, lng, lat) {
-        state.angle.createAngleDiv(state, e, lng, lat);
         if ( state.line && state.line.coordinates.length >= 3) {
             addLineToSnapList(state.line.coordinates.slice(0, state.line.coordinates.length - 1), state); 
         } else if( state.polygon && state.polygon.coordinates[0].length >= 3) {
@@ -162,7 +175,7 @@ class Angle {
     }
 
     onStop(state) {
-        state.angle.remove(state);
+       this.remove(state);
         if (state.markerPoint) {
             state.markerPoint.remove();
             state.markerPoint = undefined;

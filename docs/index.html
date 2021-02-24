@@ -120,6 +120,7 @@
             this._container.className = 'mapboxgl-ctrl';
             this._container.style.backgroundColor = 'white';
             this._container.style.fontSize = '30px';
+            this._container.style.padding = '5px';
             this._container.textContent = '0 m';
             return this._container;
         }
@@ -130,6 +131,24 @@
         }
       }
 
+      class AngleControl {
+        constructor() {}
+        onAdd(map) {
+            this._map = map;
+            this._container = document.createElement('div');
+            this._container.className = 'mapboxgl-ctrl';
+            this._container.style.backgroundColor = 'white';
+            this._container.style.fontSize = '30px';
+            this._container.style.padding = '5px';
+            this._container.textContent = '0 °';
+            return this._container;
+        }
+        
+        onRemove() {
+            this._container.parentNode.removeChild(this._container);
+            this._map = undefined;
+        }
+      }
 
       class extendDrawBarCheckboxes {
         constructor(opt) {
@@ -272,7 +291,8 @@
             });
             draw.options.angle = true;
             map.addControl(SnapAngleOptionsBar, "top-right");
-            map.addControl(new DistanceControl(), "bottom-right");
+            const angle = map.addControl(new AngleControl(), "bottom-right");
+            const distance = map.addControl(new DistanceControl(), "bottom-right");
             
             draw.set({
               type: "FeatureCollection",
