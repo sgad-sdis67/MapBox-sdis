@@ -87,13 +87,10 @@ SnapLineMode.onClick = function(state, e) {
     var lng = state.snappedLng;
     var lat = state.snappedLat;
 
-    console.log(lng, lat, 'avant')
     const array = state.angle.transformSnapping(state, e, lng, lat);
     lng = array[0];
     lat = array[1];
 
-
-    console.log(lng, lat, 'après')
     /* if (state.angle.snapPoint) {
       lng = state.angle.snapPoint[0];
       lat = state.angle.snapPoint[1];

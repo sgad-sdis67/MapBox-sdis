@@ -144,22 +144,21 @@ class Angle {
 
     transformSnapping(state, e, lng, lat) {
 		if (state.options.angle) {
-			console.log('into')
 			if (this.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
 				lng = this.snapPoint[0];
 				lat = this.snapPoint[1];
-				console.log('dedans');
 			}
 		}
-		console.log('1')
         return [lng, lat];
     }
 
     onClickFinalModifications(state, e, lng, lat) {
         state.angle.createAngleDiv(state, e, lng, lat);
-        if (state.line.coordinates.length > 3) {
+        if ( state.line && state.line.coordinates.length > 3) {
             addLineToSnapList(state.line.coordinates.slice(0, state.line.coordinates.length - 1), state); 
-        }
+        } else if( state.polygon && state.polygon.coordinates.length > 3) {
+			addLineToSnapList(state.polygon.coordinates[0].slice(0, state.polygon.coordinates[0].length - 1), state); 
+		}
     }
 
     onStop(state) {

@@ -81,8 +81,7 @@ SnapPolygonMode.onSetup = function(options) {
     this.map.on("moveend", moveendCallback);
     this.map.on("draw.snap.options_changed", optionsChangedCallBAck);
 
-    state.angle = new Angle();
-    state.id = uuidv4();
+    new Angle().onSetup(state);
     return state;
 };
 
@@ -90,10 +89,9 @@ SnapPolygonMode.onClick = function(state, e) {
     // We save some processing by rounding on click, not mousemove
     var lng = state.snappedLng;
     var lat = state.snappedLat;
-    if (state.angle.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
-        lng = state.angle.snapPoint[0];
-        lat = state.angle.snapPoint[1];
-    }
+    const array = state.angle.transformSnapping(state, e, lng, lat);
+    lng = array[0];
+    lat = array[1];
 
     // End the drawing if this click is on the previous position
     if (state.currentVertexPosition > 0) {
@@ -118,10 +116,7 @@ SnapPolygonMode.onClick = function(state, e) {
     state.currentVertexPosition++;
 
     state.polygon.updateCoordinate(`0.${state.currentVertexPosition}`, lng, lat);
-    state.angle.createAngleDiv(state, e, lng, lat);
-    if (state.polygon.coordinates[0] && state.polygon.coordinates[0].length > 3) {
-        addLineToSnapList(state.polygon.coordinates[0].slice(0, state.polygon.coordinates[0].length - 1), state); // ajouter un système pour ajouter les points au layer au lieu d'ajouter des layers
-    }
+    state.angle.onClickFinalModifications(state, e, lng, lat);
 };
 
 SnapPolygonMode.onMouseMove = function(state, e) {
@@ -178,11 +173,7 @@ SnapPolygonMode.onStop = function(state) {
 
     // This relies on the the state of SnapPolygonMode being similar to DrawPolygon
     DrawPolygon.onStop.call(this, state);
-    state.angle.remove(state);
-    if (state.markerPoint) {
-        state.markerPoint.remove();
-        state.markerPoint = undefined;
-    }
+    state.angle.onStop(state);
 };
 
 export default SnapPolygonMode;
