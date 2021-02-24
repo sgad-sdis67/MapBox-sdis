@@ -16,7 +16,7 @@ import {
     visualizeSnapPoint
 } from "./../utils";
 import Angle from './../utils/angle.js';
-import { v4 as uuidv4 } from 'uuid';
+import Distance from './../utils/distance.js';
 
 const SnapPolygonMode = {...DrawPolygon };
 
@@ -82,6 +82,7 @@ SnapPolygonMode.onSetup = function(options) {
     this.map.on("draw.snap.options_changed", optionsChangedCallBAck);
 
     new Angle().onSetup(state);
+    new Distance().onSetup(state);
     return state;
 };
 
@@ -152,6 +153,7 @@ SnapPolygonMode.onMouseMove = function(state, e) {
         this.updateUIClasses({ mouse: cursors.ADD });
     }
     state.angle.moveOn(state, e);
+    state.distance.onMouseMove(state, lng, lat);
 };
 
 // This is 'extending' DrawPolygon.toDisplayFeatures
@@ -174,6 +176,7 @@ SnapPolygonMode.onStop = function(state) {
     // This relies on the the state of SnapPolygonMode being similar to DrawPolygon
     DrawPolygon.onStop.call(this, state);
     state.angle.onStop(state);
+    state.distance.onStop(state);
 };
 
 export default SnapPolygonMode;
