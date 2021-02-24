@@ -154,9 +154,9 @@ class Angle {
 
     onClickFinalModifications(state, e, lng, lat) {
         state.angle.createAngleDiv(state, e, lng, lat);
-        if ( state.line && state.line.coordinates.length > 3) {
+        if ( state.line && state.line.coordinates.length >= 3) {
             addLineToSnapList(state.line.coordinates.slice(0, state.line.coordinates.length - 1), state); 
-        } else if( state.polygon && state.polygon.coordinates.length > 3) {
+        } else if( state.polygon && state.polygon.coordinates[0].length >= 3) {
 			addLineToSnapList(state.polygon.coordinates[0].slice(0, state.polygon.coordinates[0].length - 1), state); 
 		}
     }
