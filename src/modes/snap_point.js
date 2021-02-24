@@ -8,6 +8,7 @@ import {
   IDS,
   shouldHideGuide,
   snap,
+  visualizeSnapPoint
 } from "./../utils";
 
 const SnapPointMode = { ...DrawPoint };
@@ -85,6 +86,15 @@ SnapPointMode.onMouseMove = function (state, e) {
   state.snappedLng = lng;
   state.snappedLat = lat;
 
+  if (e.lngLat.lng !== lng && e.lngLat.lat !== lat) {
+    visualizeSnapPoint(state, lng, lat);
+  } else {
+      if (state.markerPoint) {
+          state.markerPoint.remove();
+          state.markerPoint = undefined;
+      }
+  }
+
   if (
     state.lastVertex &&
     state.lastVertex[0] === lng &&
@@ -121,6 +131,10 @@ SnapPointMode.onStop = function (state) {
 
   // This relies on the the state of SnapPointMode having a 'point' prop
   DrawPoint.onStop.call(this, state);
+  if (state.markerPoint) {
+      state.markerPoint.remove();
+      state.markerPoint = undefined;
+  }
 };
 
 export default SnapPointMode;
