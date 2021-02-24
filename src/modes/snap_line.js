@@ -77,8 +77,7 @@ SnapLineMode.onSetup = function(options) {
 
     this.map.on("moveend", moveendCallback);
     this.map.on("draw.snap.options_changed", optionsChangedCallBAck);
-    state.angle = new Angle();
-    state.id = uuidv4();
+    new Angle().onSetup(state);
 
     return state;
 };
@@ -88,10 +87,7 @@ SnapLineMode.onClick = function(state, e) {
     var lng = state.snappedLng;
     var lat = state.snappedLat;
 
-    if (state.angle.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
-        lng = state.angle.snapPoint[0];
-        lat = state.angle.snapPoint[1];
-    }
+    lng, lat = state.angle.transformSnapping(state, e, lng, lat);
     /* if (state.angle.snapPoint) {
       lng = state.angle.snapPoint[0];
       lat = state.angle.snapPoint[1];
@@ -119,10 +115,7 @@ SnapLineMode.onClick = function(state, e) {
     state.currentVertexPosition++;
 
     state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
-    state.angle.createAngleDiv(state, e, lng, lat);
-    if (state.line.coordinates.length > 3) {
-        addLineToSnapList(state.line.coordinates.slice(0, state.line.coordinates.length - 1), state); // ajouter un système pour ajouter les points au layer au lieu d'ajouter des layers
-    }
+    state.angle.onClickFinalModifications(state, e, lng, lat);
 };
 
 SnapLineMode.onMouseMove = function(state, e) {
@@ -177,11 +170,7 @@ SnapLineMode.onStop = function(state) {
 
     // This relies on the the state of SnapLineMode being similar to DrawLine
     DrawLine.onStop.call(this, state);
-    state.angle.remove(state);
-    if (state.markerPoint) {
-        state.markerPoint.remove();
-        state.markerPoint = undefined;
-    }
+    state.angle.onStop(state);
 };
 
 export default SnapLineMode;

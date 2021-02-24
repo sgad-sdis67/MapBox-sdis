@@ -423,7 +423,6 @@ export const getGuideFeature = (id) => ({
 });
 
 export const visualizeSnapPoint = (state, lng, lat) => {
-    console.log(state.markerPoint, 'markerPoint')
     if (!state.markerPoint) {
         var el = document.createElement('div');
         el.className = 'marker';

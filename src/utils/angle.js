@@ -10,8 +10,11 @@ import along from '@turf/along';
 import distance from '@turf/distance';
 import { bearingToAzimuth, bearingToAngle, transformRotate } from '@turf/turf';
 import {
-    addPointToSnapList
+    addPointToSnapList,
+	addLineToSnapList
 } from "./../utils";
+import { v4 as uuidv4 } from 'uuid';
+
 
 class Angle {
 
@@ -122,6 +125,35 @@ class Angle {
         }
         if (state.map.getSource('snapLine')) {
             state.map.setLayoutProperty('snapLineLayer', 'visibility', 'none');
+        }
+    }
+
+    onSetup(state) {
+        state.angle = new Angle();
+		state.angle.activate = state.options.angle;
+        state.id = uuidv4();
+    }
+
+    transformSnapping(state, e, lng, lat) {
+        if (state.angle.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
+            lng = state.angle.snapPoint[0];
+            lat = state.angle.snapPoint[1];
+        }
+        return lng, lat;
+    }
+
+    onClickFinalModifications(state, e, lng, lat) {
+        state.angle.createAngleDiv(state, e, lng, lat);
+        if (state.line.coordinates.length > 3) {
+            addLineToSnapList(state.line.coordinates.slice(0, state.line.coordinates.length - 1), state); 
+        }
+    }
+
+    onStop(state) {
+        state.angle.remove(state);
+        if (state.markerPoint) {
+            state.markerPoint.remove();
+            state.markerPoint = undefined;
         }
     }
 }
