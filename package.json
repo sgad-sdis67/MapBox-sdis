@@ -11,7 +11,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@turf/turf": "^5.1.6"
+    "@babel/preset-react": "^7.12.13",
+    "@turf/turf": "^5.1.6",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "uuid": "^8.3.2"
   },
   "peerDependencies": {
     "@mapbox/mapbox-gl-draw": "^1.2.0"
