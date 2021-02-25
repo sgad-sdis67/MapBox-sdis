@@ -2,13 +2,7 @@ import SnapPolygonMode from './modes/snap_polygon.js';
 import SnapPointMode from './modes/snap_point.js';
 import SnapLineMode from './modes/snap_line.js';
 import SnapModeDrawStyles from "./utils/customDrawStyles.js";
-
-const mapboxGlDrawSnapMode = {
-  SnapPolygonMode,
-  SnapPointMode,
-  SnapLineMode,
-  SnapModeDrawStyles,
-};
+import React, { useRef, useState, useEffect } from 'react';
 
 class DistanceControl {
   constructor() {}
@@ -93,16 +87,7 @@ class extendDrawBarCheckboxes {
   }
 }
 
-const MapBoxGlSnap = (props) => {
-  if (mapboxgl.getRTLTextPluginStatus() === "unavailable")
-    mapboxgl.setRTLTextPlugin(
-      "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js",
-      (err) => {
-        err && console.error(err);
-      },
-      true
-    );
-  let mapRef = useRef(null);
+export default function MapBoxGlSnap (props) {
 
   useEffect(() => {
     const map = props.map;
@@ -177,9 +162,7 @@ const MapBoxGlSnap = (props) => {
 
   return (
     <div className="map-wrapper">
-      <div id="map" ref={mapRef} />
+      <div id="map"/>
     </div>
   );
 }
-
-export default MapBoxGlSnap;

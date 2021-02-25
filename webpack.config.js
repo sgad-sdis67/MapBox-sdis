@@ -18,7 +18,7 @@ module.exports = [
       // libraryExport: 'default',
     },
     optimization: {
-      minimize: true,
+      minimize: false,
       minimizer: [new TerserPlugin({ parallel: true })],
     },
     // externals: [/^(@mapbox\/mapbox-gl-draw).*$/],

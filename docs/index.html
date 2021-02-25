@@ -85,9 +85,12 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="map"></div>
 
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="./mapbox-gl-draw-snap-mode.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js"></script>
 
     <script type="module">
       import nprogress from "https://cdn.skypack.dev/nprogress";
@@ -95,16 +98,14 @@
       nprogress.start();
     </script>
 
-    <script type="text/babel" data-type="module">
-      import React, {
-        useRef,
-        useState,
-        useEffect,
-      } from "https://cdn.skypack.dev/react";
-      import ReactDOM from "https://cdn.skypack.dev/react-dom";
-      import MapBoxGlSnap from "./mapbox-gl-draw-snap-mode.js";
+    <script type="text/babel" data-type="module">      
+    import React, { useRef, useState, useEffect } from 'react';
+    import ReactDOM from 'react-dom';
+      const {
+        MapBoxGlSnap
+      } = mapboxGlDrawSnapMode;
       ReactDOM.render(<MapBoxGlSnap map={new mapboxgl.Map({
-            container: mapRef.current || ``,
+            container: 'map',
             style: `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
             center: [51.3857, 35.6102],
             zoom: 10,
@@ -123,7 +124,6 @@
               };
             }
           }) }/>, document.getElementById("root")); 
-    
      </script>
   </body>
 </html>
