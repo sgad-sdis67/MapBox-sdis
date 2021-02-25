@@ -151,7 +151,7 @@ SnapLineMode.onMouseMove = function(state, e) {
     } else {
         this.updateUIClasses({ mouse: cursors.ADD });
     }
-    state.angle.moveOn(state, e);
+    state.angle.moveOn(state, e, lng, lat);
     state.distance.onMouseMove(state, lng, lat);
 };
 

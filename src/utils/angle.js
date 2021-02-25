@@ -40,8 +40,12 @@ class Angle {
             .addTo(this.state.map);
     }
 
+    canCalculateAngle(state) {
+        return state.line && state.line.coordinates.length >=2 || state.polygon && state.polygon.coordinates[0].length >=2;
+    }
+
     definePointsAndCalculeAngle(state, e) {
-        if (state.line && state.line.coordinates.length >=2 || state.polygon && state.polygon.coordinates[0].length >=2) {
+        if (this.canCalculateAngle(state)) {
             let point1;
             let point2;
             let oldPoint;
@@ -97,12 +101,6 @@ class Angle {
         }
     }
 
-	removeSnapLine(state) {
-		if (state.map.getSource('snapLine')) {
-			state.map.setLayoutProperty('snapLineLayer', 'visibility', 'none');
-		}
-	}
-
     calcAngle(point1, point2, oldPoint) {
         let angle;
         const absoluteAngle = Math.round(bearing(point1, point2));
@@ -120,10 +118,24 @@ class Angle {
         });
     }
 
-    moveOn(state, e) {
+    moveOn(state, e, lng, lat) {
         const control = this.findAngleControl(state);
         if (control) {
             control._container.lastChild.textContent = this.definePointsAndCalculeAngle(state, e) + ' °';
+        }
+        if (this.canCalculateAngle(state)) {
+            const distanceSnapPoint = distance([e.lngLat.lng, e.lngLat.lat], [lng, lat]);
+            const distanceAngleSnapPoint = distance([e.lngLat.lng, e.lngLat.lat], this.snapPoint);
+            if (distanceAngleSnapPoint > distanceSnapPoint) {
+                state.line.updateCoordinate(state.currentVertexPosition, this.snapPoint[0], this.snapPoint[1]);
+            } else {
+                console.log('dedans')
+                this.remove(state);
+                state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
+            }
+        } else {
+            this.remove(state);
+            state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
         }
     }
 
@@ -137,14 +149,12 @@ class Angle {
         }
     }
 
-    remove(state) {
-        if (this.marker) {
-            this.marker.remove();
-        }
-        const angleControl = this.findAngleControl(state);
-        if (angleControl) {
-            angleControl._container.lastChild.textContent = '0 °';
-        } 
+    remove(state) {        
+        this.removeSnapLine(state);
+    }
+
+    removeSnapLine(state) {
+        console.log(state.map, 'map', state.map.getSource('snapLine'))
         if (state.map.getSource('snapLine')) {
             state.map.setLayoutProperty('snapLineLayer', 'visibility', 'none');
         }
@@ -174,12 +184,20 @@ class Angle {
 		}
     }
 
-    onStop(state) {
-       this.remove(state);
+    removeStateMarker(state) {
         if (state.markerPoint) {
             state.markerPoint.remove();
             state.markerPoint = undefined;
         }
+    }
+
+    onStop(state) {
+        const angleControl = this.findAngleControl(state);
+        if (angleControl) {
+            angleControl._container.lastChild.textContent = '0 °';
+        } 
+        this.remove(state);
+        this.removeStateMarker(state)
     }
 }
 

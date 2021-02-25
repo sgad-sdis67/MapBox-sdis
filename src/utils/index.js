@@ -430,7 +430,6 @@ export const visualizeSnapPoint = (state, lng, lat) => {
         el.style.width = "14px";
         el.style.backgroundColor = 'yellow';
         el.style.borderRadius = "7px";
-
         state.markerPoint = new mapboxgl.Marker(el)
             .setLngLat([lng, lat])
             .addTo(state.map);
