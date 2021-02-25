@@ -21,6 +21,7 @@ class Angle {
     constructor(withSnapping = 30) {
         this.lastCalcul = 0;
         this.snapping = withSnapping;
+        this.angleIsSnap = false;
     }
 
 
@@ -126,14 +127,20 @@ class Angle {
         if (this.canCalculateAngle(state)) {
             const distanceSnapPoint = distance([e.lngLat.lng, e.lngLat.lat], [lng, lat]);
             const distanceAngleSnapPoint = distance([e.lngLat.lng, e.lngLat.lat], this.snapPoint);
-            if (distanceAngleSnapPoint > distanceSnapPoint) {
-                state.line.updateCoordinate(state.currentVertexPosition, this.snapPoint[0], this.snapPoint[1]);
-            } else {
-                console.log('dedans')
+            if (distanceSnapPoint !== 0 && distanceAngleSnapPoint > distanceSnapPoint) {
                 this.remove(state);
                 state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
+                this.angleIsSnap = false;
+            } else {
+                if (state.markerPoint) {
+                    state.markerPoint.remove();
+                    state.markerPoint = undefined;
+                }
+                this.angleIsSnap = true;
+                state.line.updateCoordinate(state.currentVertexPosition, this.snapPoint[0], this.snapPoint[1]);
             }
         } else {
+            this.angleIsSnap = false;
             this.remove(state);
             state.line.updateCoordinate(state.currentVertexPosition, lng, lat);
         }
@@ -154,7 +161,6 @@ class Angle {
     }
 
     removeSnapLine(state) {
-        console.log(state.map, 'map', state.map.getSource('snapLine'))
         if (state.map.getSource('snapLine')) {
             state.map.setLayoutProperty('snapLineLayer', 'visibility', 'none');
         }
@@ -168,10 +174,10 @@ class Angle {
 
     transformSnapping(state, e, lng, lat) {
 		if (state.options.angle) {
-			if (this.snapPoint && e.lngLat.lng === lng && e.lngLat.lat === lat) {
-				lng = this.snapPoint[0];
+            if (this.angleIsSnap) {
+                lng = this.snapPoint[0];
 				lat = this.snapPoint[1];
-			}
+            }
 		}
         return [lng, lat];
     }
