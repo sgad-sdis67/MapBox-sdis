@@ -6267,11 +6267,11 @@ function MapBoxGlSnap(props) {
       var distance = map.addControl(new DistanceControl(), "bottom-right");
     });
   }, []);
-  return /*#__PURE__*/react.createElement("div", {
-    className: "map-wrapper"
+  ReactDOM.render( /*#__PURE__*/react.createElement("div", {
+    "class": "map-wrapper"
   }, /*#__PURE__*/react.createElement("div", {
     id: "map"
-  }));
+  })), document.getElementById('root'));
 }
 // CONCATENATED MODULE: ./src/index.js
 

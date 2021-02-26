@@ -14,6 +14,7 @@ import {
 	addLineToSnapList
 } from "./../utils";
 import { v4 as uuidv4 } from 'uuid';
+import mapboxgl from 'mapbox-gl'
 
 
 class Angle {

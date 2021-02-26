@@ -19,6 +19,7 @@ import polygonToLine from "@turf/polygon-to-line";
 import nearestPointOnLine from "@turf/nearest-point-on-line";
 import midpoint from "@turf/midpoint";
 import { v4 as uuidv4 } from 'uuid';
+import mapboxgl from 'mapbox-gl'
 
 export const IDS = {
     VERTICAL_GUIDE: "VERTICAL_GUIDE",

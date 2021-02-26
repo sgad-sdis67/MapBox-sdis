@@ -3,6 +3,10 @@ import SnapPointMode from './modes/snap_point.js';
 import SnapLineMode from './modes/snap_line.js';
 import SnapModeDrawStyles from "./utils/customDrawStyles.js";
 import React, { useRef, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import mapboxgl from 'mapbox-gl';
+import './mapBoxGlSnap.css'
 
 class DistanceControl {
   constructor() {}
@@ -60,10 +64,10 @@ class extendDrawBarCheckboxes {
     return ctrl._container;
   }
   onRemove(map) {
-    ctrl.checkboxes.forEach((b) => {
-      ctrl.removeButton(b);
+    this.checkboxes.forEach((b) => {
+      this.removeButton(b);
     });
-    ctrl.onRemoveOrig(map);
+    this.onRemoveOrig(map);
   }
   addCheckbox(opt) {
     let ctrl = this;
@@ -88,81 +92,78 @@ class extendDrawBarCheckboxes {
 }
 
 export default function MapBoxGlSnap (props) {
-
   useEffect(() => {
     const map = props.map;
+    if (map) {
 
-    const draw = new MapboxDraw({
-      modes: {
-        ...MapboxDraw.modes,
-        draw_point: SnapPointMode,
-        draw_polygon: SnapPolygonMode,
-        draw_line_string: SnapLineMode,
-      },
-      styles: SnapModeDrawStyles,
-      userProperties: true,
-      snap: true,
-      snapOptions: {
-        snapPx: 15,
-        snapToMidPoints: true,
-      },
-      guides: false,
-    });
-
-    map.once("load", () => {
-      nprogress.done();
-      map.resize();
-
-      const SnapOptionsBar = new extendDrawBarCheckboxes({
-        draw: draw,
-        checkboxes: [
-          {
-            on: "change",
-            action: (e) => {
-              draw.options.snap = e.target.checked;
-            },
-            classes: ["snap_mode", "snap"],
-            title: "Snap when Draw",
-            initialState: "checked",
-          },
-          {
-            on: "change",
-            action: (e) => {
-              draw.options.guides = e.target.checked;
-            },
-            classes: ["snap_mode", "grid"],
-            title: "Show Guides",
-          },
-        ],
+      const draw = new MapboxDraw({
+        modes: {
+          ...MapboxDraw.modes,
+          draw_point: SnapPointMode,
+          draw_polygon: SnapPolygonMode,
+          draw_line_string: SnapLineMode,
+        },
+        styles: SnapModeDrawStyles,
+        userProperties: true,
+        snap: true,
+        snapOptions: {
+          snapPx: 15,
+          snapToMidPoints: true,
+        },
+        guides: false,
       });
-
-      map.addControl(draw, "top-right");
-      map.addControl(SnapOptionsBar, "top-right");
-      const SnapAngleOptionsBar = new extendDrawBarCheckboxes({
-        draw: draw,
-        checkboxes: [
-          {
-            on: "change",
-            action: (e) => {
-              draw.options.angle = e.target.checked;
-              console.log(e, draw, '1')
+  
+      map.once("load", () => {
+        map.resize();
+  
+        const SnapOptionsBar = new extendDrawBarCheckboxes({
+          draw: draw,
+          checkboxes: [
+            {
+              on: "change",
+              action: (e) => {
+                draw.options.snap = e.target.checked;
+              },
+              classes: ["snap_mode", "snap"],
+              title: "Snap when Draw",
+              initialState: "checked",
             },
-            classes: ["snap_mode_angle", "snap_angle"],
-            title: "Snap angle",
-            initialState: "checked",
-          }
-        ],
+            {
+              on: "change",
+              action: (e) => {
+                draw.options.guides = e.target.checked;
+              },
+              classes: ["snap_mode", "grid"],
+              title: "Show Guides",
+            },
+          ],
+        });
+  
+        map.addControl(draw, "top-right");
+        map.addControl(SnapOptionsBar, "top-right");
+        const SnapAngleOptionsBar = new extendDrawBarCheckboxes({
+          draw: draw,
+          checkboxes: [
+            {
+              on: "change",
+              action: (e) => {
+                draw.options.angle = e.target.checked;
+              },
+              classes: ["snap_mode_angle", "snap_angle"],
+              title: "Snap angle",
+              initialState: "checked",
+            }
+          ],
+        });
+        draw.options.angle = true;
+        map.addControl(SnapAngleOptionsBar, "top-right");
+        const angle = map.addControl(new AngleControl(), "bottom-right");
+        const distance = map.addControl(new DistanceControl(), "bottom-right");
       });
-      draw.options.angle = true;
-      map.addControl(SnapAngleOptionsBar, "top-right");
-      const angle = map.addControl(new AngleControl(), "bottom-right");
-      const distance = map.addControl(new DistanceControl(), "bottom-right");
-    });
-  }, []);
+    }
+    
+  },[props.refresh]);
 
-  return (
-    <div className="map-wrapper">
-      <div id="map"/>
-    </div>
-  );
+
+  return(<div></div>);
 }
