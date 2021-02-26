@@ -165,5 +165,5 @@ export default function MapBoxGlSnap (props) {
   },[props.refresh]);
 
 
-  return(<div></div>);
+  return(React.createElement('div', null, ''));
 }
